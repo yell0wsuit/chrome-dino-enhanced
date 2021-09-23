@@ -4,7 +4,7 @@ Chrome Dino, but with new features that work for most browsers.
 ## Play online
 https://yell0wsuit.github.io/html5-games/games/chrome-dino/
 
-## Features
+## New features
 
 - Preserve highscore. Use ``localStorage`` to save and retrieve high score. No more accidental refresh that wipes your hard work!
    - The original code uses native code from Chrome to retrieve and store score, something that isn't possible for other browsers.
