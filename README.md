@@ -5,6 +5,12 @@ Also check out [Microsoft Edge's *Let's Surf*](https://github.com/yell0wsuit/ms-
 
 <p align="center">
   <img src="https://i.imgur.com/kIV1YKm.png"/>
+  Default night mode for dark-enabled OS
+</p>
+
+<p align="center">
+  <img src="https://i.imgur.com/krI6KnS.png" />
+  Normal day mode
 </p>
 
 ## Play
