@@ -6,7 +6,7 @@ Play online: https://yell0wsuit.github.io/html5-games/games/chrome-dino/
 
 Play offline: download or clone this repo, then open ``index.html`` to play.
 
-## Features
+## Features / Changes
 
 - Preserve highscore. Use ``localStorage`` to save and retrieve high score. No more accidental refresh that wipes your hard work!
    - The original code uses native code from Chrome to retrieve and store score, something that isn't possible for other browsers.
@@ -19,3 +19,4 @@ Play offline: download or clone this repo, then open ``index.html`` to play.
 - Gamepad support (not tested).
 - PWA support. You can install this game as an app to play offline.
    - This is useful on mobile platforms since you cannot open ``index.html`` directly like PC.
+- Fix the game not working on iOS/iPadOS Safari browser.
