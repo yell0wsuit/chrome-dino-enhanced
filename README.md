@@ -1,8 +1,10 @@
 # Chrome Dino enhanced
 Chrome Dino, but with new features that work for most browsers.
 
-## Play online
-https://yell0wsuit.github.io/html5-games/games/chrome-dino/
+## Play
+Play online: https://yell0wsuit.github.io/html5-games/games/chrome-dino/
+
+Play offline: download or clone this repo, then open ``index.html`` to play.
 
 ## Features
 
@@ -16,3 +18,4 @@ https://yell0wsuit.github.io/html5-games/games/chrome-dino/
 - Use other pixelated filter for other browsers so the game looks consistent across browsers.
 - Gamepad support (not tested).
 - PWA support. You can install this game as an app to play offline.
+   - This is useful on mobile platforms since you cannot open ``index.html`` directly like PC.
