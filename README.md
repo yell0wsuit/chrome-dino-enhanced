@@ -1,5 +1,5 @@
 # Chrome Dino enhanced
-Chrome Dino, but with enhancement that work for most browsers.
+Chrome Dino, but with enhancement that works for most browsers.
 
 ## Play
 Play online: https://yell0wsuit.github.io/html5-games/games/chrome-dino/
