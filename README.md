@@ -1,6 +1,8 @@
 # Chrome Dino enhanced
 Chrome Dino, but with enhancement that works for most browsers.
 
+Also check out [Microsoft Edge's *Let's Surf*](https://github.com/yell0wsuit/ms-edge-letssurf), an offline game for Microsoft Edge.
+
 ## Play
 Play online: https://yell0wsuit.github.io/html5-games/games/chrome-dino/
 
