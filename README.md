@@ -30,5 +30,6 @@ Play offline: download or clone this repo, then open ``index.html`` to play.
 - Use other pixelated filters for other browsers so the game looks consistent across browsers.
 - Gamepad support (not tested).
 - PWA support. You can install this game as an app to play offline.
-   - This is useful on mobile platforms since you cannot open ``index.html`` directly like PC.
+   - This is useful on mobile platforms since you cannot open ``index.html`` directly like PC.  
+   On iOS, you need to use Safari and add the page to the homescreen.
 - Fix the game not working on iOS/iPadOS Safari browser.
