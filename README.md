@@ -22,7 +22,7 @@ Play offline: download or clone this repo, then open ``index.html`` to play.
 
 - Preserve highscore. Use ``localStorage`` to save and retrieve high score. No more accidental refresh that wipes your hard work!
    - The original code uses native code from Chrome to retrieve and store score, something that isn't possible for other browsers.
-   - Highscore reset will be implemented later.
+- Reset highscore by clicking/tapping on the HI score twice.
 - Arcade mode. The game adapts to the screen width like the Chrome version (chrome://dino). Beneficial to big screens.
 - Day & night cycle. Game will start in night cycle if the users choose the dark theme in the OS/browser setting.
    - Fixed the bugs related to invert filter.
