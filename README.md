@@ -20,7 +20,8 @@ Play offline: download or clone this repo, then open ``index.html`` to play.
 
 ## Features / Changes
 - Updated the code from the (kinda) latest Chrome version.
-   - Restored 5 Olympic sport game modes.
+   - Restored 5 Olympic sport game modes.  
+   (After the birthday event, the Chromium team has decided to [obfuscate new sprites before launch](https://github.com/chromium/chromium/tree/main/components/error_page/common/alt_game_images/README.md). This means if you miss out the event, you won't be able to play the new mode.
 - Disable "Start slower" toggle as it doesn't work (apparently).
 - Preserve highscore. Use ``localStorage`` to save and retrieve high score.
    - The original code uses native code from Chrome to retrieve and store score.
