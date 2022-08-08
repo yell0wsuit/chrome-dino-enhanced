@@ -1,11 +1,3 @@
-function _isIpad() {
-  var isIpad = navigator.userAgent.toLowerCase().indexOf('ipad') !== -1;
-  if (!isIpad && navigator.userAgent.match(/Mac/) && navigator.maxTouchPoints && navigator.maxTouchPoints > 2) {
-    return true;
-  }
-  return isIpad;
-}
-
 // Copyright (c) 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -51,7 +43,7 @@ function Runner(outerContainerId, opt_config) {
   this.distanceMeter = null;
   this.distanceRan = 0;
 
-  this.highestScore = 0 || window.localStorage.getItem("chrome-dino");
+  this.highestScore = window.localStorage.getItem("chrome-dino");
   this.syncHighestScore = false;
 
   this.time = 0;
@@ -121,8 +113,7 @@ const FPS = 60;
 const IS_HIDPI = window.devicePixelRatio > 1;
 
 /** @const */
-const IS_IOS = !!window.navigator.userAgent.match(/iP(hone|ad|od)/i) && !!window.navigator.userAgent.match(/Safari/i) ||
-  _isIpad() || /CriOS/.test(window.navigator.userAgent) || /FxiOS/.test(window.navigator.userAgent);
+const IS_IOS = /CriOS/.test(window.navigator.userAgent);
 
 /** @const */
 const IS_MOBILE = /Android/.test(window.navigator.userAgent) || IS_IOS;
@@ -144,7 +135,7 @@ const A11Y_STRINGS = {
   highScore: 'dinoGameA11yHighScore',
   jump: 'dinoGameA11yJump',
   started: 'dinoGameA11yStartGame',
-  speedLabel: 'dinoGameA11ySpeedToggle'
+  speedLabel: 'dinoGameA11ySpeedToggle',
 };
 
 /**
@@ -174,7 +165,7 @@ Runner.config = {
   SPEED: 6,
   SPEED_DROP_COEFFICIENT: 3,
   ARCADE_MODE_INITIAL_TOP_POSITION: 35,
-  ARCADE_MODE_TOP_POSITION_PERCENT: 0.1
+  ARCADE_MODE_TOP_POSITION_PERCENT: 0.1,
 };
 
 Runner.normalConfig = {
@@ -185,7 +176,7 @@ Runner.normalConfig = {
   INVERT_DISTANCE: 700,
   MAX_SPEED: 13,
   MOBILE_SPEED_COEFFICIENT: 1.2,
-  SPEED: 6
+  SPEED: 6,
 };
 
 
@@ -197,7 +188,7 @@ Runner.slowConfig = {
   INVERT_DISTANCE: 350,
   MAX_SPEED: 9,
   MOBILE_SPEED_COEFFICIENT: 1.5,
-  SPEED: 4.2
+  SPEED: 4.2,
 };
 
 
@@ -206,7 +197,7 @@ Runner.slowConfig = {
  */
 Runner.defaultDimensions = {
   WIDTH: DEFAULT_WIDTH,
-  HEIGHT: 150
+  HEIGHT: 150,
 };
 
 
@@ -223,7 +214,7 @@ Runner.classes = {
   INVERTED: 'inverted',
   SNACKBAR: 'snackbar',
   SNACKBAR_SHOW: 'snackbar-show',
-  TOUCH_CONTROLLER: 'controller'
+  TOUCH_CONTROLLER: 'controller',
 };
 
 
@@ -234,7 +225,7 @@ Runner.classes = {
 Runner.sounds = {
   BUTTON_PRESS: 'offline-sound-press',
   HIT: 'offline-sound-hit',
-  SCORE: 'offline-sound-reached'
+  SCORE: 'offline-sound-reached',
 };
 
 
@@ -244,8 +235,8 @@ Runner.sounds = {
  */
 Runner.keycodes = {
   JUMP: {'38': 1, '32': 1},  // Up, spacebar
-  DUCK: {'40': 1},  // Down
-  RESTART: {'13': 1}  // Enter
+  DUCK: {'40': 1},           // Down
+  RESTART: {'13': 1},        // Enter
 };
 
 
@@ -513,7 +504,6 @@ Runner.prototype = {
     this.outerContainerEl.appendChild(this.containerEl);
     this.outerContainerEl.appendChild(this.slowSpeedCheckboxLabel);
 
-
     this.startListening();
     this.update();
 
@@ -607,7 +597,9 @@ Runner.prototype = {
     if (!this.activated && !this.crashed) {
       this.playingIntro = true;
       this.tRex.playingIntro = true;
-      this.distanceMeter.setHighScore(window.localStorage.getItem("chrome-dino"));
+      if (window.localStorage.getItem("chrome-dino") !== null) {
+          this.distanceMeter.setHighScore(window.localStorage.getItem("chrome-dino"));
+      }
 
       // CSS animation definition.
       const keyframes = '@-webkit-keyframes intro { ' +
@@ -871,7 +863,7 @@ Runner.prototype = {
    * @param {Event} e
    */
   handleCanvasKeyPress(e) {
-    if (!this.activated) {
+    if (!this.activated && !Runner.audioCues) {
       this.toggleSpeed();
       Runner.audioCues = true;
       this.generatedSoundFx.init();
@@ -909,7 +901,9 @@ Runner.prototype = {
         this.tRex.enableSlowConfig();
         this.horizon.adjustObstacleSpeed();
       }
-      this.disableSpeedToggle(true);
+      if (this.playing) {
+        this.disableSpeedToggle(true);
+      }
     }
   },
 
@@ -1193,9 +1187,9 @@ Runner.prototype = {
       if (this.distanceMeter.hasClickedOnHighScore(e) && this.highestScore) {
         if (this.distanceMeter.isHighScoreFlashing()) {
           // Subsequent click, reset the high score.
-          this.distanceMeter.setHighScore(window.localStorage.removeItem('chrome-dino'));
           this.saveHighScore(0, true);
           this.distanceMeter.resetHighScore();
+          this.distanceMeter.setHighScore(window.localStorage.removeItem('chrome-dino'));
         } else {
           // First click, flash the high score.
           this.distanceMeter.startHighScoreFlashing();
@@ -1402,7 +1396,7 @@ Runner.prototype = {
     // control characters &#x202A; and &#x202C but are invisible.
     /* return IS_RTL ? document.title.indexOf(ARCADE_MODE_URL) == 1 :
                     document.title === ARCADE_MODE_URL; */
-    return true; // Always in arcade mode
+    return true;
   },
 
   /**
@@ -1476,7 +1470,7 @@ Runner.prototype = {
       this.inverted = htmlEl.classList.toggle(
           Runner.classes.INVERTED, this.invertTrigger);
     }
-  }
+  },
 };
 
 
@@ -1817,7 +1811,7 @@ GameOverPanel.FLASH_ITERATIONS = 5;
  */
 GameOverPanel.animConfig = {
   frames: [0, 36, 72, 108, 144, 180, 216, 252],
-  msPerFrame: GameOverPanel.RESTART_ANIM_DURATION / 8
+  msPerFrame: GameOverPanel.RESTART_ANIM_DURATION / 8,
 };
 
 /**
@@ -1830,7 +1824,7 @@ GameOverPanel.dimensions = {
   TEXT_WIDTH: 191,
   TEXT_HEIGHT: 11,
   RESTART_WIDTH: 36,
-  RESTART_HEIGHT: 32
+  RESTART_HEIGHT: 32,
 };
 
 
@@ -2052,7 +2046,7 @@ GameOverPanel.prototype = {
     this.flashTimer = 0;
     this.flashCounter = 0;
     this.originalText = true;
-  }
+  },
 };
 
 
@@ -2397,7 +2391,7 @@ Obstacle.prototype = {
           collisionBoxes[i].x, collisionBoxes[i].y, collisionBoxes[i].width,
           collisionBoxes[i].height);
     }
-  }
+  },
 };
 
 
@@ -2456,7 +2450,7 @@ Trex.config = {
   SPRITE_WIDTH: 262,
   START_X_POS: 50,
   WIDTH: 44,
-  WIDTH_DUCK: 59
+  WIDTH_DUCK: 59,
 };
 
 Trex.slowJumpConfig = {
@@ -2480,10 +2474,13 @@ Trex.normalJumpConfig = {
 Trex.collisionBoxes = {
   DUCKING: [new CollisionBox(1, 18, 55, 25)],
   RUNNING: [
-    new CollisionBox(22, 0, 17, 16), new CollisionBox(1, 18, 30, 9),
-    new CollisionBox(10, 35, 14, 8), new CollisionBox(1, 24, 29, 5),
-    new CollisionBox(5, 30, 21, 4), new CollisionBox(9, 34, 15, 4)
-  ]
+    new CollisionBox(22, 0, 17, 16),
+    new CollisionBox(1, 18, 30, 9),
+    new CollisionBox(10, 35, 14, 8),
+    new CollisionBox(1, 24, 29, 5),
+    new CollisionBox(5, 30, 21, 4),
+    new CollisionBox(9, 34, 15, 4),
+  ],
 };
 
 
@@ -2496,7 +2493,7 @@ Trex.status = {
   DUCKING: 'DUCKING',
   JUMPING: 'JUMPING',
   RUNNING: 'RUNNING',
-  WAITING: 'WAITING'
+  WAITING: 'WAITING',
 };
 
 /**
@@ -2513,24 +2510,24 @@ Trex.BLINK_TIMING = 7000;
 Trex.animFrames = {
   WAITING: {
     frames: [44, 0],
-    msPerFrame: 1000 / 3
+    msPerFrame: 1000 / 3,
   },
   RUNNING: {
     frames: [88, 132],
-    msPerFrame: 1000 / 12
+    msPerFrame: 1000 / 12,
   },
   CRASHED: {
     frames: [220],
-    msPerFrame: 1000 / 60
+    msPerFrame: 1000 / 60,
   },
   JUMPING: {
     frames: [0],
-    msPerFrame: 1000 / 60
+    msPerFrame: 1000 / 60,
   },
   DUCKING: {
     frames: [264, 323],
-    msPerFrame: 1000 / 8
-  }
+    msPerFrame: 1000 / 8,
+  },
 };
 
 
@@ -2893,7 +2890,7 @@ Trex.prototype = {
     this.midair = false;
     this.speedDrop = false;
     this.jumpCount = 0;
-  }
+  },
 };
 
 
@@ -2943,7 +2940,7 @@ function DistanceMeter(canvas, spritePos, canvasWidth) {
 DistanceMeter.dimensions = {
   WIDTH: 10,
   HEIGHT: 13,
-  DEST_WIDTH: 11
+  DEST_WIDTH: 11,
 };
 
 
@@ -2976,7 +2973,7 @@ DistanceMeter.config = {
   FLASH_ITERATIONS: 3,
 
   // Padding around the high score hit area.
-  HIGH_SCORE_HIT_AREA_PADDING: 4
+  HIGH_SCORE_HIT_AREA_PADDING: 4,
 };
 
 
@@ -3058,11 +3055,17 @@ DistanceMeter.prototype = {
       }
     }
 
-    this.canvasCtx.drawImage(this.image, sourceX, sourceY,
-        sourceWidth, sourceHeight,
-        targetX, targetY,
-        targetWidth, targetHeight
-      );
+    this.canvasCtx.drawImage(
+        this.image,
+        sourceX,
+        sourceY,
+        sourceWidth,
+        sourceHeight,
+        targetX,
+        targetY,
+        targetWidth,
+        targetHeight,
+    );
 
     this.canvasCtx.restore();
   },
@@ -3202,14 +3205,13 @@ DistanceMeter.prototype = {
    */
   getHighScoreBounds() {
     return {
-      x: (this.x - (this.maxScoreUnits * 2) *
-          DistanceMeter.dimensions.WIDTH) -
+      x: (this.x - (this.maxScoreUnits * 2) * DistanceMeter.dimensions.WIDTH) -
           DistanceMeter.config.HIGH_SCORE_HIT_AREA_PADDING,
       y: this.y,
       width: DistanceMeter.dimensions.WIDTH * (this.highScore.length + 1) +
           DistanceMeter.config.HIGH_SCORE_HIT_AREA_PADDING,
       height: DistanceMeter.dimensions.HEIGHT +
-          (DistanceMeter.config.HIGH_SCORE_HIT_AREA_PADDING * 2)
+          (DistanceMeter.config.HIGH_SCORE_HIT_AREA_PADDING * 2),
     };
   },
 
@@ -3304,7 +3306,7 @@ DistanceMeter.prototype = {
   reset() {
     this.update(0, 0);
     this.achievement = false;
-  }
+  },
 };
 
 
@@ -3344,7 +3346,7 @@ Cloud.config = {
   MAX_SKY_LEVEL: 30,
   MIN_CLOUD_GAP: 100,
   MIN_SKY_LEVEL: 71,
-  WIDTH: 46
+  WIDTH: 46,
 };
 
 
@@ -3403,7 +3405,7 @@ Cloud.prototype = {
    */
   isVisible() {
     return this.xPos + Cloud.config.WIDTH > 0;
-  }
+  },
 };
 
 
@@ -3447,7 +3449,7 @@ BackgroundEl.config = {
   POS: 0,
   SPEED: 0,
   Y_POS: 0,
-  MS_PER_FRAME: 0  // only needed when BACKGROUND_EL.FIXED is true
+  MS_PER_FRAME: 0,  // only needed when BACKGROUND_EL.FIXED is true
 };
 
 
@@ -3526,7 +3528,7 @@ BackgroundEl.prototype = {
    */
   isVisible() {
     return this.xPos + this.spriteConfig.WIDTH > 0;
-  }
+  },
 };
 
 
@@ -3566,7 +3568,7 @@ NightMode.config = {
   STAR_SIZE: 9,
   STAR_SPEED: 0.3,
   STAR_MAX_Y: 70,
-  WIDTH: 20
+  WIDTH: 20,
 };
 
 NightMode.phases = [140, 120, 100, 60, 40, 20, 0];
@@ -3688,7 +3690,7 @@ NightMode.prototype = {
     this.currentPhase = 0;
     this.opacity = 0;
     this.update(false);
-  }
+  },
 
 };
 
@@ -3736,7 +3738,7 @@ function HorizonLine(canvas, lineConfig) {
 HorizonLine.dimensions = {
   WIDTH: 600,
   HEIGHT: 12,
-  YPOS: 127
+  YPOS: 127,
 };
 
 
@@ -3827,7 +3829,7 @@ HorizonLine.prototype = {
   reset() {
     this.xPos[0] = 0;
     this.xPos[1] = this.dimensions.WIDTH;
-  }
+  },
 };
 
 
@@ -3881,7 +3883,7 @@ Horizon.config = {
   BUMPY_THRESHOLD: .3,
   CLOUD_FREQUENCY: .5,
   HORIZON_HEIGHT: 16,
-  MAX_CLOUDS: 6
+  MAX_CLOUDS: 6,
 };
 
 
@@ -4081,8 +4083,9 @@ Horizon.prototype = {
    */
   addNewObstacle(currentSpeed) {
     const obstacleCount =
-        Runner.isAltGameModeEnabled() && !this.altGameModeActive ||
-            this.altGameModeActive ?
+        Obstacle.types[Obstacle.types.length - 1].type != 'COLLECTABLE' ||
+            (Runner.isAltGameModeEnabled() && !this.altGameModeActive ||
+             this.altGameModeActive) ?
         Obstacle.types.length - 1 :
         Obstacle.types.length - 2;
     const obstacleTypeIndex =
@@ -4178,5 +4181,5 @@ Horizon.prototype = {
           this.canvas, this.spritePos.BACKGROUND_EL, this.dimensions.WIDTH,
           type));
     }
-  }
+  },
 };
