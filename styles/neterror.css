@@ -65,7 +65,7 @@ html[dir='rtl'].offline .icon-offline {
 }
 
 .offline.inverted {
-  background-color: #dfdedb /* --google-gray-900 inverted value */
+  background-color: #dfdedb; /* --google-gray-900 inverted value */
   filter: invert(1);
 }
 
