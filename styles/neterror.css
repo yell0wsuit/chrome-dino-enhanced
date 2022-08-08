@@ -159,7 +159,8 @@ html[dir='rtl'].offline .icon-offline {
   border-radius: 24px/50%;
   bottom: 0;
   color: var(--error-code-color);
-  display: inline-flex;
+  /*display: inline-flex;*/
+  display: none;
   font-size: 1em;
   left: 0;
   line-height: 1.1em;
